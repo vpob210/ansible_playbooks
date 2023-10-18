@@ -1,0 +1,25 @@
+- name: Удаление Docker и дерикторий
+  hosts: docker_host1
+  become: true
+
+  tasks:
+    
+    - name: Остановка и удаление всех контейнеров
+      shell: docker stop $(docker ps -aq) && docker stop $(docker ps -aq)
+    
+    - name: Удаление Docker CE
+      apt:
+        name:
+          - docker-compose
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: absent
+
+    - name: Удаление директорий Docker
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/docker
+        - /var/lib/docker

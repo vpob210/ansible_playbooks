@@ -1,0 +1,2 @@
+[Docker_hosts]
+docker_host1 ansible_host=192.168.66.193 ansible_user= < ssh user > ansible_password= < ssh pass > ansible_become_password= < pass dlja sudo >

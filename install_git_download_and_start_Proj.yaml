@@ -1,0 +1,37 @@
+- name: Установка git и запуск проекта
+  hosts: docker_host1
+  become: true
+
+  vars:
+    github_link: "https://github.com/vpob210/git-fork-case.git"
+
+  tasks:
+    - name: Установка git
+      apt:
+        name: git
+        state: present
+      become: true
+
+    - name: Получение имени репозитория
+      shell: "basename -s .git {{ github_link }}"
+      changed_when: false
+      register: repo_name
+
+    - name: Клонирование репозитория
+      git:
+        repo: "{{ github_link }}"
+        dest: "{{ ansible_env.PWD }}/{{ repo_name.stdout }}"
+      become: true
+      register: git_clone_result
+
+    - name: Переход в папку с репозиторием and start container
+      shell: cd "{{ ansible_env.PWD }}/{{ repo_name.stdout }}" && docker-compose up -d #&& wall Hello $PWD # ansible_env.PWD
+      args:
+        executable: /bin/bash
+      become: true
+
+    # - name: Запуск docker-compose
+    #   command: docker-compose up -d
+    #   args:
+    #     chdir: "{{ ansible_user_dir }}/{{ repository_folder_name }}" # ansible_env.PWD
+    #   become: true

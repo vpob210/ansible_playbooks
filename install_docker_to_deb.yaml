@@ -1,0 +1,66 @@
+---
+- name: Установка Docker и Docker Compose
+  hosts: Docker_hosts  # для кого ставим
+  become: true
+
+  tasks:
+    - name: Обновление списка пакетов
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Установка пакетов для поддержки HTTPS
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+      when: ansible_os_family == 'Debian'
+
+    - name: Добавление официального ключа Docker GPG
+      apt_key:
+        url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Добавление репозитория Docker
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_lsb.codename }} stable"
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Установка Docker
+      apt:
+        update_cache: yes
+        name: docker-ce
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Добавление пользователей в группу docker
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      when: ansible_os_family == 'Debian'
+
+#    - name: Install pip
+#      apt:
+#        name:
+#          - python3-pip
+#          - libffi-dev
+#          - libssl-dev
+#        state: present
+
+    - name: Установка Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Перезапуск службы Docker
+      service:
+        name: docker
+        state: restarted
+      when: ansible_os_family == 'Debian'
