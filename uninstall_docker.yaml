@@ -5,7 +5,7 @@
   tasks:
     
     - name: Остановка и удаление всех контейнеров
-      shell: docker stop $(docker ps -aq) && docker stop $(docker ps -aq)
+      shell: docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
     
     - name: Удаление Docker CE
       apt:

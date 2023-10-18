@@ -28,7 +28,9 @@
       shell: echo "PATH_FOR_PROJECT="{{ ansible_env.PWD }}/{{ repo_name.stdout }}"" > "{{ ansible_env.PWD }}/{{ repo_name.stdout }}/.env"
 
     - name: Переход в папку с репозиторием and start container
-      shell: cd "{{ ansible_env.PWD }}/{{ repo_name.stdout }}" && docker-compose up -d #&& wall Hello $PWD # ansible_env.PWD
+      shell: cd "{{ ansible_env.PWD }}/{{ repo_name.stdout }}" \
+                                               && chmod +x start_project.sh \
+                                                   && ./start_project.sh #&& wall Hello $PWD # ansible_env.PWD
       args:
         executable: /bin/bash
       become: true
