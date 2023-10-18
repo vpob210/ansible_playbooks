@@ -3,7 +3,7 @@
   become: true
 
   vars:
-    github_link: "https://github.com/vpob210/git-fork-case.git"
+    github_link: "https://github.com/vpob210/docker_nginx_php_mysql_phpadmin.git"
 
   tasks:
     - name: Установка git
